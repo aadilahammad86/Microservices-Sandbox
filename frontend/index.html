@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Infrastructure Monitor | DevOps Portfolio</title>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- BROCHURE OVERLAY -->
+    <div id="brochure-overlay" class="brochure-overlay">
+
+        <!-- Step 1: Landing -->
+        <div class="brochure-step active" id="step-1">
+            <div class="brochure-icon"><i data-lucide="rocket"></i></div>
+            <h1 class="brochure-title">Zero-Cost Microservices Architecture</h1>
+            <p class="brochure-desc">
+                Welcome to Project 1. This isn't just a webpage; it's a demonstration of a complete, automated, 3-tier
+                microservice environment built entirely with free, open-source DevOps tooling.
+            </p>
+            <div class="brochure-highlights">
+                <div class="highlight"><i data-lucide="check-circle"></i> 100% Dockerized</div>
+                <div class="highlight"><i data-lucide="check-circle"></i> Automated CI/CD</div>
+                <div class="highlight"><i data-lucide="check-circle"></i> Live Database</div>
+            </div>
+            <div class="brochure-nav">
+                <button class="btn btn-primary" onclick="nextStep(2)">See The Architecture <i
+                        data-lucide="arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Step 2: Architecture -->
+        <div class="brochure-step" id="step-2">
+            <div class="brochure-icon"><i data-lucide="layers"></i></div>
+            <h1 class="brochure-title">The Blueprint</h1>
+            <p class="brochure-desc">
+                Under the hood, this project runs on three distinct containers interacting via a custom Docker bridged
+                network.
+            </p>
+            <div class="architecture-diagram">
+                <div class="arch-box frontend-box">
+                    <i data-lucide="layout"></i>
+                    <strong>Frontend (Nginx)</strong>
+                    <span>Serves the UI & Proxies Traffic</span>
+                </div>
+                <div class="arch-arrow"><i data-lucide="arrow-right"></i></div>
+                <div class="arch-box backend-box">
+                    <i data-lucide="server"></i>
+                    <strong>Backend (Node.js)</strong>
+                    <span>Express REST API</span>
+                </div>
+                <div class="arch-arrow"><i data-lucide="arrow-right"></i></div>
+                <div class="arch-box db-box">
+                    <i data-lucide="database"></i>
+                    <strong>Database (PostgreSQL)</strong>
+                    <span>Persistent Data Volume</span>
+                </div>
+            </div>
+            <div class="brochure-nav split">
+                <button class="btn btn-secondary" onclick="nextStep(1)"><i data-lucide="arrow-left"></i> Back</button>
+                <button class="btn btn-primary" onclick="nextStep(3)">View CI/CD Pipeline <i
+                        data-lucide="arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Step 3: CI/CD -->
+        <div class="brochure-step" id="step-3">
+            <div class="brochure-icon"><i data-lucide="git-merge"></i></div>
+            <h1 class="brochure-title">Automated Delivery</h1>
+            <p class="brochure-desc">
+                Code pushed to GitHub triggers a <strong>GitHub Actions</strong> workflow that runs tests, builds the
+                Docker images, and pushes them to the <strong>GitHub Container Registry (GHCR)</strong>.
+            </p>
+            <div class="cicd-flow">
+                <div class="flow-step"><span>1</span> Git Push</div>
+                <div class="flow-divider"></div>
+                <div class="flow-step"><span>2</span> Run Tests</div>
+                <div class="flow-divider"></div>
+                <div class="flow-step"><span>3</span> Build Images</div>
+                <div class="flow-divider"></div>
+                <div class="flow-step"><span>4</span> Push to Registry</div>
+            </div>
+            <div class="brochure-nav split">
+                <button class="btn btn-secondary" onclick="nextStep(2)"><i data-lucide="arrow-left"></i> Back</button>
+                <button class="btn btn-accent" onclick="closeBrochure()">Enter Live Dashboard <i
+                        data-lucide="activity"></i></button>
+            </div>
+        </div>
+    </div>
+    <!-- END BROCHURE OVERLAY -->
+
+
+    <header>
+        <div class="logo">
+            <i data-lucide="server"></i>
+            Global Infrastructure Monitor
+        </div>
+        <div class="status-indicator">
+            <div class="dot" id="system-dot"></div>
+            <span id="system-status">Checking Systems...</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Left Column: Primary Metrics -->
+        <div class="dashboard-primary">
+
+            <div class="metrics-overview">
+                <div class="metric-box">
+                    <h3>Active Nodes</h3>
+                    <div class="value" id="count-nodes">--</div>
+                </div>
+                <div class="metric-box">
+                    <h3>Avg CPU Load</h3>
+                    <div class="value" id="avg-cpu">--%</div>
+                </div>
+                <div class="metric-box">
+                    <h3>Avg Memory Load</h3>
+                    <div class="value" id="avg-ram">--%</div>
+                </div>
+                <div class="metric-box">
+                    <h3>DB Connection</h3>
+                    <div class="value" id="db-status"
+                        style="color: var(--success); font-size: 1.5rem; margin-top:0.5rem">OK</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <h2>Live Server Telemetry</h2>
+                    <button class="btn btn-secondary refresh-btn" onclick="fetchMetrics()"><i data-lucide="refresh-cw"
+                            style="width:14px; height:14px; margin-right:4px; vertical-align:middle;"></i> Sync</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Server Hostname</th>
+                                <th>CPU Usage</th>
+                                <th>Memory Usage</th>
+                                <th>Health Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metrics-body">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                    Loading telemetry from PostgreSQL backend...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Logs and Deploys -->
+        <div class="dashboard-secondary">
+            <div class="glass-card">
+                <div class="card-header">
+                    <h2>Recent Deployments</h2>
+                </div>
+                <ul class="log-list" id="deployments-list">
+                    <li style="color: var(--text-muted); font-size: 0.875rem;">Loading deployment sync...</li>
+                </ul>
+            </div>
+
+            <div class="glass-card"
+                style="margin-top: 1.5rem; background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.2);">
+                <h3 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1rem;"><i data-lucide="info"
+                        style="width:16px; height:16px; vertical-align:middle; margin-right:4px;"></i> Tech Stack</h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5;">
+                    Built with Node.js, Express, PostgreSQL, and Nginx. Orchestrated via Docker Compose and deployed
+                    automatically via GitHub Actions pipelines.
+                </p>
+                <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem; justify-content: center;"
+                    onclick="resetBrochure()"><i data-lucide="book-open"
+                        style="width:16px; height:16px; margin-right:6px"></i> Show Project Intro</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize Icons
+        try { lucide.createIcons(); } catch (e) { console.error("Lucide Error", e); }
+
+        // --- BROCHURE LOGIC ---
+        window.nextStep = function (stepNumber) {
+            document.querySelectorAll('.brochure-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-' + stepNumber).classList.add('active');
+        };
+
+        window.closeBrochure = function () {
+            document.getElementById('brochure-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('brochure-overlay').style.display = 'none';
+            }, 500); // Wait for fade out
+        };
+
+        window.resetBrochure = function () {
+            document.getElementById('brochure-overlay').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('brochure-overlay').style.opacity = '1';
+                window.nextStep(1);
+            }, 10);
+        };
+
+        // --- DASHBOARD LOGIC ---
+        function getProgressColor(val) {
+            if (val > 80) return 'var(--danger)';
+            if (val > 60) return 'var(--warning)';
+            return 'var(--success)';
+        }
+
+        async function fetchMetrics() {
+            try {
+                // Check general health
+                const healthRes = await fetch('/api/health');
+                if (healthRes.ok) {
+                    document.getElementById('system-status').innerText = 'All Systems Operational';
+                    document.getElementById('system-dot').style.background = 'var(--success)';
+                    document.getElementById('system-dot').style.boxShadow = '0 0 8px var(--success)';
+                    document.getElementById('db-status').innerText = 'Connected';
+                    document.getElementById('db-status').style.color = 'var(--success)';
+                }
+
+                // Fetch real metrics
+                const metricsRes = await fetch('/api/metrics');
+                const metrics = await metricsRes.json();
+
+                const tableBody = document.getElementById('metrics-body');
+                tableBody.innerHTML = '';
+
+                let totalCpu = 0;
+                let totalRam = 0;
+                let activeNodes = 0;
+
+                metrics.forEach(row => {
+                    const tr = document.createElement('tr');
+
+                    if (row.status !== 'Maintenance') {
+                        totalCpu += parseFloat(row.cpu_usage);
+                        totalRam += parseFloat(row.ram_usage);
+                        activeNodes++;
+                    }
+
+                    tr.innerHTML = `
+                        <td style="font-family: monospace; font-size: 0.875rem;">${row.server_name}</td>
+                        <td>
+                            <div style="font-size: 0.875rem; margin-bottom: 0.125rem;">${row.cpu_usage}%</div>
+                            <div class="progress-bg"><div class="progress-fill" style="width: ${row.cpu_usage}%; background: ${getProgressColor(row.cpu_usage)}"></div></div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.875rem; margin-bottom: 0.125rem;">${row.ram_usage}%</div>
+                            <div class="progress-bg"><div class="progress-fill" style="width: ${row.ram_usage}%; background: ${getProgressColor(row.ram_usage)}"></div></div>
+                        </td>
+                        <td><span class="badge ${row.status}">${row.status}</span></td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                // Update Overview Cards
+                document.getElementById('count-nodes').innerText = metrics.length;
+                document.getElementById('avg-cpu').innerText = activeNodes > 0 ? (totalCpu / activeNodes).toFixed(1) + '%' : '0%';
+                document.getElementById('avg-ram').innerText = activeNodes > 0 ? (totalRam / activeNodes).toFixed(1) + '%' : '0%';
+
+                // Fetch deployments
+                const deployRes = await fetch('/api/deployments');
+                const deploys = await deployRes.json();
+
+                const deployList = document.getElementById('deployments-list');
+                deployList.innerHTML = '';
+
+                deploys.forEach(dep => {
+                    const li = document.createElement('li');
+                    li.className = 'log-item';
+
+                    const date = new Date(dep.deployed_at);
+
+                    li.innerHTML = `
+                        <div class="env">${dep.environment}</div>
+                        <div class="svc">${dep.service}</div>
+                        <div class="ver">Deployed: ${dep.version} &bull; ${date.toLocaleTimeString()}</div>
+                    `;
+                    deployList.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('system-status').innerText = 'API Connection Failed';
+                document.getElementById('system-dot').style.background = 'var(--danger)';
+                document.getElementById('system-dot').style.boxShadow = '0 0 8px var(--danger)';
+                document.getElementById('db-status').innerText = 'Disconnected';
+                document.getElementById('db-status').style.color = 'var(--danger)';
+            }
+        }
+
+        // Fetch on load and every 5 seconds
+        fetchMetrics();
+        setInterval(fetchMetrics, 5000);
+    </script>
+</body>
+
+</html>
